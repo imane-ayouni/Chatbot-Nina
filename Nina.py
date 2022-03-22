@@ -1,9 +1,27 @@
-import chatterbot_voice as voice
+#import chatterbot_voice as voice
 import chatterbot_weather as weather
 from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer
 from chatterbot.comparisons import LevenshteinDistance
 from chatterbot.response_selection import get_most_frequent_response
+from chatterbot.trainers import ChatterBotCorpusTrainer
+import twitter
+import logging
+from convokit import Corpus, download
+import os
+import logging
+import re
+
+
+rep = open("Replika_1.rtf","r")
+train_data = []
+
+
+for line in rep:
+    m = re.search('(Q:|A:)?(.+)', line)
+    if m:
+        train_data.append(m.groups()[1])
+
 
 
 # Create a chatterbot instance
@@ -15,6 +33,7 @@ from chatterbot.response_selection import get_most_frequent_response
 # Set the input comparison function to Levenshtein distance ( distance between two words is the minimum number of single-character edits)
 # Set the answer selection method to most frequent
 bot = ChatBot("Nina",
+               preprocessors=['chatterbot.preprocessors.clean_whitespace'],
                storage_adapter="chatterbot.storage.SQLStorageAdapter",
                logic_adapters=[
                'chatterbot.logic.BestMatch',
@@ -31,13 +50,27 @@ bot = ChatBot("Nina",
                output_adapter='chatterbot.output.TerminalAdapter',
                database='./database.sqlite3')
 
+c_trainer =  ChatterBotCorpusTrainer(bot)
+c_trainer.train(
+    "chatterbot.corpus.english")
+
+
+logger = logging.getLogger()
+logger.setLevel(logging.CRITICAL)
+
+
+#filepath = r"C:\Users\imane\OneDrive\Desktop\train"
+#l_trainer = ListTrainer(bot.storage)
+#for file in os.listdir(filepath):
+#    data = open(filepath +"\\" + file, encoding="utf-8").readlines()
+#    l_trainer.train(data)
+l_trainer = ListTrainer(bot)
+
+l_trainer.train(train_data)
+
 
 print("Type something to begin...")
 
 # Create a while loop for the bot to run in
 while True:
-    try:
-        bot_input = bot.get_response(None)
-        print(bot_input)
-    except(KeyboardInterrupt, EOFError, SystemExit):
-        break
+    print(bot.get_response(input(">>>")))

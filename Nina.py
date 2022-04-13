@@ -13,15 +13,43 @@ import logging
 import re
 
 
-rep = open("Replika_1.rtf","r")
+rep_1 = open("Replika.txt","r")
+rep_2 = open("Replika02.txt","r")
+rep_3 = open("Replika03.txt","r")
+wiki_1 = open("wiki_1.txt","r",encoding='utf-8')
+wiki_2 = open("WikiQA-1.txt","r",encoding='utf-8')
+wiki_3 = open("WikiQA-2.txt","r",encoding='utf-8')
 train_data = []
 
 
-for line in rep:
+for line in (rep_1):
     m = re.search('(Q:|A:)?(.+)', line)
     if m:
         train_data.append(m.groups()[1])
 
+for line in (rep_2):
+    m = re.search('(Q:|A:)?(.+)', line)
+    if m:
+        train_data.append(m.groups()[1])
+
+for line in (rep_3):
+    m = re.search('(Q:|A:)?(.+)', line)
+    if m:
+        train_data.append(m.groups()[1])
+
+for line in (wiki_1):
+    m = re.search('(Q:|A:)?(.+)', line)
+    if m:
+        train_data.append(m.groups()[1])
+
+for line in (wiki_2):
+    m = re.search('(Q:|A:)?(.+)', line)
+    if m:
+        train_data.append(m.groups()[1])
+for line in (wiki_3):
+    m = re.search('(Q:|A:)?(.+)', line)
+    if m:
+        train_data.append(m.groups()[1])
 
 
 # Create a chatterbot instance
